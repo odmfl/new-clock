@@ -20,10 +20,14 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 
 import androidx.annotation.AttrRes;
 import androidx.annotation.ColorInt;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.drawable.DrawableKt;
 
 public final class ThemeUtils {
 
@@ -45,7 +49,7 @@ public final class ThemeUtils {
      */
     @ColorInt
     public static int resolveColor(Context context, @AttrRes int attr) {
-        return resolveColor(context, attr, null /* stateSet */);
+        return resolveColor(context, attr, null);
     }
 
     /**
@@ -99,5 +103,24 @@ public final class ThemeUtils {
             a.recycle();
         }
     }
+
+    /**
+     * Convenience method for scaling Drawable.
+     */
+    public static BitmapDrawable toScaledBitmapDrawable(Context context, int drawableResId, float scale) {
+        final Drawable drawable = AppCompatResources.getDrawable(context, drawableResId);
+        if (drawable == null) return null;
+        return new BitmapDrawable(context.getResources(), DrawableKt.toBitmap(drawable,
+                (int) (scale * drawable.getIntrinsicHeight()), (int) (scale * drawable.getIntrinsicWidth()), null));
+    }
+
+    /**
+     * Convenience method for converting dp to pixel.
+     */
+    public static int toPixel(int dp, Context context) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                context.getResources().getDisplayMetrics());
+    }
+
 }
 

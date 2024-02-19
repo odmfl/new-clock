@@ -2,15 +2,13 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bottom_sheet"
+    android:background="@drawable/bg_bedtime_bottom_sheet"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:paddingBottom="8dp"
+        android:paddingBottom="12dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -27,7 +25,7 @@
             android:layout_height="4dp"
             android:layout_marginTop="12dp"
             android:importantForAccessibility="no"
-            android:foreground="@color/md_theme_dark_outline"
+            android:foreground="@color/md_theme_outline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -46,12 +44,11 @@
                 android:layout_height="18dp"
                 android:importantForAccessibility="no"
                 app:srcCompat="@drawable/ic_tab_wakeup"
-                app:tint="?android:attr/textColorSecondary"
-                app:tintMode="src_in"/>
+                app:tint="@color/md_theme_onSurfaceVariant" />
 
             <TextView
                 android:textSize="11sp"
-                android:textColor="?android:attr/textColorSecondary"
+                android:textColor="@color/md_theme_onSurfaceVariant"
                 android:gravity="center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -61,7 +58,6 @@
                 android:importantForAccessibility="no"
                 android:fontFamily="sans-serif-medium"
                 android:layout_marginStart="8dp"/>
-
         </LinearLayout>
 
         <com.best.deskclock.widget.TextTime
@@ -75,11 +71,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/wakeup_label" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
+        <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/toggle_switch_wakeup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="10dp"
             android:focusable="true"
             android:minWidth="@dimen/touch_target_min_size"
             android:minHeight="@dimen/touch_target_min_size"
@@ -104,7 +100,7 @@
 
         <View
             android:id="@+id/bedtime_preference_hairline"
-            android:background="@color/md_theme_dark_outline"
+            android:background="@color/md_theme_outline"
             android:layout_width="0dp"
             android:layout_height="@dimen/hairline_height"
             android:layout_marginTop="16dp"
@@ -117,6 +113,7 @@
             android:id="@+id/choose_ringtone_bedtime"
             android:layout_width="match_parent"
             android:layout_height="@dimen/touch_target_min_size"
+            android:layout_marginStart="6dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:drawablePadding="@dimen/alarm_horizontal_padding"
@@ -135,19 +132,20 @@
             app:layout_gravity="fill_horizontal"
             app:layout_row="3" />
 
-
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/vibrate_onoff_wake"
             android:layout_width="match_parent"
             android:layout_height="@dimen/touch_target_min_size"
+            android:layout_marginStart="10dp"
             android:paddingStart="@dimen/checkbox_start_padding"
             android:paddingEnd="@dimen/checkbox_start_padding"
             android:text="@string/alarm_vibrate"
-            android:textSize="30sp"
+            android:textSize="16sp"
             app:layout_column="5"
             app:layout_columnSpan="3"
             app:layout_constraintTop_toBottomOf="@+id/choose_ringtone_bedtime"
             app:layout_gravity="center_vertical"
             app:layout_row="3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.core.widget.NestedScrollView>

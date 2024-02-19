@@ -23,7 +23,6 @@ import static androidx.viewpager.widget.ViewPager.SCROLL_STATE_IDLE;
 import static androidx.viewpager.widget.ViewPager.SCROLL_STATE_SETTLING;
 import static com.best.deskclock.AnimatorUtils.getScaleAnimator;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -55,7 +54,6 @@ import com.best.deskclock.actionbarmenu.OptionsMenuManager;
 import com.best.deskclock.actionbarmenu.SettingsMenuItemController;
 import com.best.deskclock.data.DataModel;
 import com.best.deskclock.data.DataModel.SilentSetting;
-import com.best.deskclock.data.DataModel.ThemeButtonBehavior;
 import com.best.deskclock.data.OnSilentSettingsListener;
 import com.best.deskclock.events.Events;
 import com.best.deskclock.provider.Alarm;
@@ -72,8 +70,7 @@ import com.google.android.material.snackbar.Snackbar;
  */
 public class DeskClock extends BaseActivity
         implements FabContainer, LabelDialogFragment.AlarmLabelDialogHandler {
-    private static final String PERMISSION_POWER_OFF_ALARM =
-            "org.codeaurora.permission.POWER_OFF_ALARM";
+    private static final String PERMISSION_POWER_OFF_ALARM = "org.codeaurora.permission.POWER_OFF_ALARM";
     private static final int CODE_FOR_ALARM_PERMISSION = 1;
     /**
      * Coordinates handling of context menu items.
@@ -106,32 +103,21 @@ public class DeskClock extends BaseActivity
     /**
      * Shows/hides a snackbar explaining which setting is suppressing alarms from firing.
      */
-    private final OnSilentSettingsListener mSilentSettingChangeWatcher =
-            new SilentSettingChangeWatcher();
-    @SuppressLint("NonConstantResourceId")
-    private final NavigationBarView.OnItemSelectedListener mNavigationListener
-            = item -> {
+    private final OnSilentSettingsListener mSilentSettingChangeWatcher = new SilentSettingChangeWatcher();
+
+    private final NavigationBarView.OnItemSelectedListener mNavigationListener = item -> {
         UiDataModel.Tab tab = null;
-        switch (item.getItemId()) {
-            case R.id.page_alarm:
-                tab = UiDataModel.Tab.ALARMS;
-                break;
-
-            case R.id.page_clock:
-                tab = UiDataModel.Tab.CLOCKS;
-                break;
-
-            case R.id.page_timer:
-                tab = UiDataModel.Tab.TIMERS;
-                break;
-
-            case R.id.page_stopwatch:
-                tab = UiDataModel.Tab.STOPWATCH;
-                break;
-
-            case R.id.page_bedtime:
-                tab = UiDataModel.Tab.BEDTIME;
-                break;
+        int itemId = item.getItemId();
+        if (itemId == R.id.page_alarm) {
+            tab = UiDataModel.Tab.ALARMS;
+        } else if (itemId == R.id.page_clock) {
+            tab = UiDataModel.Tab.CLOCKS;
+        } else if (itemId == R.id.page_timer) {
+            tab = UiDataModel.Tab.TIMERS;
+        } else if (itemId == R.id.page_stopwatch) {
+            tab = UiDataModel.Tab.STOPWATCH;
+        } else if (itemId == R.id.page_bedtime) {
+            tab = UiDataModel.Tab.BEDTIME;
         }
 
         if (tab != null) {
@@ -141,7 +127,7 @@ public class DeskClock extends BaseActivity
 
         return false;
     };
-    private ThemeButtonBehavior mThemeBehavior;
+
     /**
      * Displays a snackbar explaining why alarms may not fire or may fire silently.
      */
@@ -197,19 +183,10 @@ public class DeskClock extends BaseActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        mThemeBehavior = DataModel.getDataModel().getThemeButtonBehavior();
-        if (mThemeBehavior == DataModel.ThemeButtonBehavior.DARK) {
-            getTheme().applyStyle(R.style.Theme_DeskClock_Dark, true);
-        }
-        if (mThemeBehavior == DataModel.ThemeButtonBehavior.LIGHT) {
-            getTheme().applyStyle(R.style.Theme_DeskClock_Light, true);
-        }
-
         super.onCreate(savedInstanceState);
 
-
         setContentView(R.layout.desk_clock);
+
         mSnackbarAnchor = findViewById(R.id.content);
 
         checkPermissions();
@@ -309,6 +286,7 @@ public class DeskClock extends BaseActivity
         // Mirror changes made to the selected tab into UiDataModel.
         mBottomNavigation = findViewById(R.id.bottom_view);
         mBottomNavigation.setOnItemSelectedListener(mNavigationListener);
+        mBottomNavigation.setBackgroundColor(getColor(R.color.md_theme_surface));
 
         // Honor changes to the selected tab from outside entities.
         UiDataModel.getUiDataModel().addTabListener(mTabChangeWatcher);
@@ -320,7 +298,6 @@ public class DeskClock extends BaseActivity
     protected void onStart() {
         DataModel.getDataModel().addSilentSettingsListener(mSilentSettingChangeWatcher);
         DataModel.getDataModel().setApplicationInForeground(true);
-
 
         super.onStart();
     }
@@ -397,8 +374,7 @@ public class DeskClock extends BaseActivity
      */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return getSelectedDeskClockFragment().onKeyDown(keyCode, event)
-                || super.onKeyDown(keyCode, event);
+        return getSelectedDeskClockFragment().onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -406,38 +382,24 @@ public class DeskClock extends BaseActivity
         final DeskClockFragment f = getSelectedDeskClockFragment();
 
         switch (updateType & FAB_ANIMATION_MASK) {
-            case FAB_SHRINK_AND_EXPAND:
-                mUpdateFabOnlyAnimation.start();
-                break;
-            case FAB_IMMEDIATE:
-                f.onUpdateFab(mFab);
-                break;
-            case FAB_MORPH:
-                f.onMorphFab(mFab);
-                break;
+            case FAB_SHRINK_AND_EXPAND -> mUpdateFabOnlyAnimation.start();
+            case FAB_IMMEDIATE -> f.onUpdateFab(mFab);
+            case FAB_MORPH -> f.onMorphFab(mFab);
         }
         if ((updateType & FAB_REQUEST_FOCUS_MASK) == FAB_REQUEST_FOCUS) {
             mFab.requestFocus();
         }
         switch (updateType & BUTTONS_ANIMATION_MASK) {
-            case BUTTONS_IMMEDIATE:
-                f.onUpdateFabButtons(mLeftButton, mRightButton);
-                break;
-            case BUTTONS_SHRINK_AND_EXPAND:
-                mUpdateButtonsOnlyAnimation.start();
-                break;
+            case BUTTONS_IMMEDIATE -> f.onUpdateFabButtons(mLeftButton, mRightButton);
+            case BUTTONS_SHRINK_AND_EXPAND -> mUpdateButtonsOnlyAnimation.start();
         }
         if ((updateType & BUTTONS_DISABLE_MASK) == BUTTONS_DISABLE) {
             mLeftButton.setClickable(false);
             mRightButton.setClickable(false);
         }
         switch (updateType & FAB_AND_BUTTONS_SHRINK_EXPAND_MASK) {
-            case FAB_AND_BUTTONS_SHRINK:
-                mHideAnimation.start();
-                break;
-            case FAB_AND_BUTTONS_EXPAND:
-                mShowAnimation.start();
-                break;
+            case FAB_AND_BUTTONS_SHRINK -> mHideAnimation.start();
+            case FAB_AND_BUTTONS_EXPAND -> mShowAnimation.start();
         }
     }
 
@@ -445,15 +407,13 @@ public class DeskClock extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Recreate the activity if any settings have been changed
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SettingsMenuItemController.REQUEST_CHANGE_SETTINGS
-                && resultCode == RESULT_OK) {
+        if (requestCode == SettingsMenuItemController.REQUEST_CHANGE_SETTINGS && resultCode == RESULT_OK) {
             mRecreateActivity = true;
         }
     }
 
     private void checkPermissions() {
-        if (checkSelfPermission(PERMISSION_POWER_OFF_ALARM)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(PERMISSION_POWER_OFF_ALARM) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{PERMISSION_POWER_OFF_ALARM}, CODE_FOR_ALARM_PERMISSION);
         }
         NotificationManager nm = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
@@ -464,8 +424,7 @@ public class DeskClock extends BaseActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CODE_FOR_ALARM_PERMISSION) {
             LogUtils.i("Power off alarm permission is granted.");
@@ -662,8 +621,7 @@ public class DeskClock extends BaseActivity
      */
     private final class TabChangeWatcher implements TabListener {
         @Override
-        public void selectedTabChanged(UiDataModel.Tab oldSelectedTab,
-                                       UiDataModel.Tab newSelectedTab) {
+        public void selectedTabChanged(UiDataModel.Tab oldSelectedTab, UiDataModel.Tab newSelectedTab) {
             // Update the view pager and tab layout to agree with the model.
             updateCurrentTab();
 
@@ -671,21 +629,11 @@ public class DeskClock extends BaseActivity
             // after a configuration change.
             if (DataModel.getDataModel().isApplicationInForeground()) {
                 switch (newSelectedTab) {
-                    case ALARMS:
-                        Events.sendAlarmEvent(R.string.action_show, R.string.label_deskclock);
-                        break;
-                    case CLOCKS:
-                        Events.sendClockEvent(R.string.action_show, R.string.label_deskclock);
-                        break;
-                    case TIMERS:
-                        Events.sendTimerEvent(R.string.action_show, R.string.label_deskclock);
-                        break;
-                    case STOPWATCH:
-                        Events.sendStopwatchEvent(R.string.action_show, R.string.label_deskclock);
-                        break;
-                    case BEDTIME:
-                        Events.sendBedtimeEvent(R.string.action_show, R.string.label_deskclock);
-                        break;
+                    case ALARMS -> Events.sendAlarmEvent(R.string.action_show, R.string.label_deskclock);
+                    case CLOCKS -> Events.sendClockEvent(R.string.action_show, R.string.label_deskclock);
+                    case TIMERS -> Events.sendTimerEvent(R.string.action_show, R.string.label_deskclock);
+                    case STOPWATCH -> Events.sendStopwatchEvent(R.string.action_show, R.string.label_deskclock);
+                    case BEDTIME -> Events.sendBedtimeEvent(R.string.action_show, R.string.label_deskclock);
                 }
             }
 
